@@ -3,10 +3,11 @@
 
 dir=$HOME/git/commitbeat
 d=`date +%s`
-file=$dir/git-$d
+file=$dir/git-1
 
 wg() {
-	wget -O $file "https://api.github.com/events?client_id=0359bad16f57c858d3ec&client_secret=da620e158454bae03538ac45b91ce3aeeb791495"
+	wget -qO $file "https://api.github.com/events?client_id=0359bad16f57c858d3ec&client_secret=da620e158454bae03538ac45b91ce3aeeb791495"
+	cp $file $dir/gh/git-$d
 }
 
 debug() {
@@ -14,8 +15,9 @@ debug() {
 }
 
 # new
+rm $file
 if ! [ -e $file ]; then
 	debug "Polling github..."
 	wg
-	cat $file
+#	cat $file
 fi

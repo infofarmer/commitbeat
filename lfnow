@@ -2,6 +2,7 @@
 
 user=$1
 dir=$HOME/git/commitbeat/lfm
+dirp=$HOME/git/commitbeat/play
 file=$dir/$user
 
 if [ -z "$user" ]; then
@@ -9,8 +10,10 @@ if [ -z "$user" ]; then
 fi
 
 d=`date +%s`
+filep=$dirp/$d-$user
 
 wg() {
+	rm -f $file
 	wget -qO $file 'http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&api_key=66b19b8bef04c0e1713280028326650c&format=json&user='$user
 }
 
@@ -20,7 +23,7 @@ debug() {
 
 # no cache
 if ! [ -e $file ]; then
-	debug "No cache found, caching..."
+#	debug "No cache found, caching..."
 	wg
 fi
 
@@ -28,28 +31,30 @@ m=`stat -f %m $file 2> /dev/null`
 s=`stat -f %z $file 2> /dev/null`
 gap=$((d-m))
 
-debug "now: $d, mod: $m, size: $s, gap: $gap"
+#debug "user: $user, now: $d, mod: $m, size: $s, gap: $gap"
 
 # blacklist
 if [ $s -lt 500 ]; then
-	debug "Blacklisted (too small)"
+#	debug "Blacklisted (too small)"
 	exit 0
 fi
 
 # too fresh
-if [ $gap -lt 60 ]; then
-	debug "Too fresh"
+if [ $gap -lt 300 ]; then
+#	debug "Too fresh"
 	exit 0
 fi
 
+debug "user: $user, size: $s, gap: $gap"
+
 # too old
-if [ $gap -gt 2000000 ]; then
-	debug "Too old"
+if [ $gap -gt 3000000 ]; then
+#	debug "Too old"
 	exit 0
 fi
 
 # just right
-debug "Just right, re-fetching"
+#debug "Just right, re-fetching"
 
 wg
 
@@ -57,12 +62,19 @@ m=`stat -f %m $file 2> /dev/null`
 s=`stat -f %z $file 2> /dev/null`
 gap=$((d-m))
 
-if [ $gap -gt 900 ]; then
-	debug "Stale-ish"
+if [ $gap -gt 86400 ]; then
+#	debug "Stale-ish"
 	exit 0
 fi
 
-cat $file && exit 0
+#cat $file
+debug "PRINTING $user!!!"
+touch $file
+{
+./lfnowjq $user
+./gitnowjq $user
+} > $filep
+exit 0
 
 # something went wrong
 debug "Uncaught exception: 0xDEADBEEG"

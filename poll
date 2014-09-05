@@ -1,3 +1,12 @@
 #!/bin/sh
 
-while true;do ./gitnow|grep -oe 'login": "[^"]*'|cut -c10-|sort -u|xargs -P20 -n1 ./lfnow;done
+id=0
+
+while true; do
+	./gitnow
+	cat git-1|\
+		jq -r '.[] | select (.id > "'$id'" ) | select (.type=="PushEvent")| .actor.login'|\
+		sort -u|\
+		xargs -P50 -n1 ./lfnow
+	id=`cat git-1|jq -r '[ .[] | .id ][0]'`
+done

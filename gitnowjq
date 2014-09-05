@@ -1,5 +1,7 @@
-#!/bin/jq
+#!/bin/sh
 
 dir=$HOME/git/commitbeat
 
-ls -r $dir/git-1*|xargs grep -l $1|head -n1|xargs cat|jq '[ .[] | select(.actor.login=="RosettaStoned") ][0] | { user: .actor.login, pic: .actor.avatar_url, repo: .repo.name, commit: .payload.commits[0].sha, msg: .payload.commits[0].message, time: .created_at }'
+#ls -r $dir/gh/git-1*|head|xargs grep -l $1|head -n1|xargs cat|\
+cat $dir/git-1|\
+	jq '[ .[] | select(.actor.login=="'$1'") ][0] | { user: .actor.login, userpic: .actor.avatar_url, repo: .repo.name, commit: .payload.commits[0].sha, msg: .payload.commits[0].message, time: .created_at }'
