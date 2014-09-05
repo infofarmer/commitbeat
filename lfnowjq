@@ -1,0 +1,13 @@
+#!/bin/sh
+
+user=$1
+dir=$HOME/git/commitbeat/lfm
+file=$dir/$user
+
+if [ -z "$user" ]; then
+	exit 1
+fi
+
+cat $file|jq '.recenttracks.track[0]'|sed -e 's/#text/htext/;s/300x300/_/'|jq '{artist: .artist.htext, track: .name, time: .date.uts, img: .image[3].htext}'
+
+exit $?

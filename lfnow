@@ -1,0 +1,69 @@
+#!/bin/sh
+
+user=$1
+dir=$HOME/git/commitbeat/lfm
+file=$dir/$user
+
+if [ -z "$user" ]; then
+	exit 1
+fi
+
+d=`date +%s`
+
+wg() {
+	wget -qO $file 'http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&api_key=66b19b8bef04c0e1713280028326650c&format=json&user='$user
+}
+
+debug() {
+	echo "$@" 1>&2
+}
+
+# no cache
+if ! [ -e $file ]; then
+	debug "No cache found, caching..."
+	wg
+fi
+
+m=`stat -f %m $file 2> /dev/null`
+s=`stat -f %z $file 2> /dev/null`
+gap=$((d-m))
+
+debug "now: $d, mod: $m, size: $s, gap: $gap"
+
+# blacklist
+if [ $s -lt 500 ]; then
+	debug "Blacklisted (too small)"
+	exit 0
+fi
+
+# too fresh
+if [ $gap -lt 60 ]; then
+	debug "Too fresh"
+	exit 0
+fi
+
+# too old
+if [ $gap -gt 2000000 ]; then
+	debug "Too old"
+	exit 0
+fi
+
+# just right
+debug "Just right, re-fetching"
+
+wg
+
+m=`stat -f %m $file 2> /dev/null`
+s=`stat -f %z $file 2> /dev/null`
+gap=$((d-m))
+
+if [ $gap -gt 900 ]; then
+	debug "Stale-ish"
+	exit 0
+fi
+
+cat $file && exit 0
+
+# something went wrong
+debug "Uncaught exception: 0xDEADBEEG"
+exit 1
