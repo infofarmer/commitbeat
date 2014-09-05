@@ -1,0 +1,12 @@
+#!/bin/sh
+
+cd play
+
+{
+	echo '['
+	ls -r|head -n100|while read a;do
+		cat $a | perl -0777 -nple 's/\n}\n{/,/'
+		echo ','
+	done|sed '$s/^,$//'
+	echo ']'
+} | jq .

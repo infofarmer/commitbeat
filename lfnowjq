@@ -8,6 +8,6 @@ if [ -z "$user" ]; then
 	exit 1
 fi
 
-cat $file|sed -e 's/#text/htext/g;s/300x300/_/g'|jq '.recenttracks.track[0]'|jq '{artist: .artist.htext, track: .name, time: .date.uts, lfimg: .image[3].htext}'
+cat $file|sed -e 's/#text/htext/g;s/300x300/_/g'|jq '.recenttracks.track[0]'|jq '{artist: .artist.htext, track: .name, lftime: .date.uts, lfimg: .image[3].htext}'
 
 exit $?
