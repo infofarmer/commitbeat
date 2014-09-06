@@ -7,6 +7,6 @@ ls -r | head -n40 | while read a; do
 	q=`jq -r '[ .artist, .track ] | join(" ")' .$a.1`
 	rd=`../rdio $q`
 	jq '. + { rdio: "'$rd'" }' .$a.1
-done | jq -s '[ .[] | select((.rdio | startswith("t")) and ((.commit | length) > 0)) ]'
+done | jq -s '[ .[] | select((.rdio | startswith("t")) and (select((.lfimg | startswith("h")) and ((.commit | length) > 0)) ]'
 
 exit 0
