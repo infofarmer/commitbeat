@@ -2,11 +2,11 @@
 
 cd play
 
-{
-	echo '['
-	ls -r|head -n100|while read a;do
-		cat $a | perl -0777 -nple 's/\n}\n{/,/'
-		echo ','
-	done|sed '$s/^,$//'
-	echo ']'
-} | jq .
+ls -r | head -n40 | while read a; do
+	jq -s -c '.[0] + .[1]' $a > .$a.1
+	q=`jq -r '[ .artist, .track ] | join(" ")' .$a.1`
+	rd=`../rdio $q`
+	jq '. + { rdio: "'$rd'" }' .$a.1
+done | jq -s '[ .[] | select((.rdio | startswith("t")) and ((.commit | length) > 0)) ]'
+
+exit 0

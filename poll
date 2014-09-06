@@ -9,4 +9,6 @@ while true; do
 		sort -u|\
 		xargs -P50 -n1 ./lfnow
 	id=`cat git-1|jq -r '[ .[] | .id ][0]'`
+	./compile > cb.json
+	gist -f cb.json -t json -u ffb6aca820e84ee32114 cb.json
 done

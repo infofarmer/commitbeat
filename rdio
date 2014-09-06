@@ -1,0 +1,18 @@
+#!/bin/sh
+
+dir=$HOME/git/commitbeat/rd
+f=`echo "$*"|sed -E 's/  */-/g'`
+file=$dir/$f
+
+if [ -z "$1" ];then
+	exit 1
+fi
+
+if [ -r $file ];then
+	cat $file
+	exit 0
+fi
+
+curl -sd "access_token=ti3ytY4AlXb93DfuHzuARA" -d "method=search" -d "query=$*" -d "types=track" https://www.rdio.com/api/1/|jq -r 'select(.status == "ok") | .result.results[0].key' > $file
+
+cat $file

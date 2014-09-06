@@ -7,7 +7,6 @@ file=$dir/git-1
 
 wg() {
 	wget -qO $file "https://api.github.com/events?client_id=0359bad16f57c858d3ec&client_secret=da620e158454bae03538ac45b91ce3aeeb791495"
-	cp $file $dir/gh/git-$d
 }
 
 debug() {
