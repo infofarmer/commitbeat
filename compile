@@ -2,11 +2,11 @@
 
 cd play
 
-ls -r | head -n40 | while read a; do
+ls -r | head -n100 | while read a; do
 	jq -s -c '.[0] + .[1]' $a > .$a.1
 	q=`jq -r '[ .artist, .track ] | join(" ")' .$a.1`
 	rd=`../rdio $q`
 	jq '. + { rdio: "'$rd'" }' .$a.1
-done | jq -s '[ .[] | select((.rdio | startswith("t")) and (.lfimg | startswith("h")) and ((.commit | length) > 0)) ]'
+done | jq -s '[ .[] | select((.rdio | startswith("t")) and (.lfimg | startswith("h")) and ((.commit | length) > 0)) ] | unique_by(.user) | unique_by(.rdio) | sort_by(.gittime) | reverse'
 
 exit 0

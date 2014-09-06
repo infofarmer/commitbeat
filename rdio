@@ -1,7 +1,7 @@
 #!/bin/sh
 
 dir=$HOME/git/commitbeat/rd
-f=`echo "$*"|sed -E 's/  */-/g'`
+f=`echo "$*"|sed -E 's,[/ ] *,-,g'`
 file=$dir/$f
 
 if [ -z "$1" ];then
