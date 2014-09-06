@@ -6,6 +6,7 @@
     <script src="http://fb.me/JSXTransformer-0.11.1.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.2/moment.min.js"></script>
     <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Lato">
     <style type="text/css">
 /* Eric Meyer's Reset CSS v2.0 - http://cssreset.com */
@@ -44,9 +45,13 @@ font-size: 10vh;
 display: flex;
 align-items: center;
 flex-direction: column;
-margin-bottom: 2em;
+margin-bottom: 0.5em;
 }
 .logo img {
+  padding: 0.5em;
+}
+.logo h2 {
+  font-size: 5vh;
   padding: 1em;
 }
 
@@ -95,13 +100,19 @@ margin: 1em;
         componentDidMount: function() {
           this.loadCommitsFromServer();
           setInterval(this.loadCommitsFromServer, this.props.pollInterval);
+          if (false) R.player.on("change:playState", function(newv) {
+            if ( newv == R.player.PLAYSTATE_STOPPED ) {
+              console.log("hey");
+            }
+          });
         },
         render: function() {
         return (
           <div className="commitBox">
           <div className="logo">
           <img src="octophone.png" />
-          <h1>Commit Beat</h1>
+          <h1>Commit ▶ Beat</h1>
+          <h2>Real-Time Global Hacker Soundtrack</h2>
           </div>
           <CommitList data={this.state.data} />
           </div>
@@ -114,7 +125,8 @@ var CommitList = React.createClass({
       return (
         <Commit key={commit.commit} user={commit.user} msg={commit.msg}
         artist={commit.artist} track={commit.track} lfimg={commit.lfimg}
-        repo={commit.repo} rdio={commit.rdio} userpic={commit.userpic}>
+        repo={commit.repo} rdio={commit.rdio} userpic={commit.userpic}
+        gittime={commit.gittime}>
         </Commit>
         );
     });
@@ -138,18 +150,28 @@ var Commit = React.createClass({
       <div className="phrase">
         User
         <div className="user">
-        <a href="https://github.com/{this.props.user}">{this.props.user}</a>
+        <a href={"https://github.com/" + this.props.user}>{this.props.user}</a>
         </div>
         pushed
-        <div className="sha"> {this.props.key.slice(0,7)} </div>
+        <div className="sha">
+        <a href={"https://github.com/" + this.props.repo + "/commit/" + this.props.key}>
+        {this.props.key.slice(0,7)}</a>
+        </div>
         to
         <div className="repo">
-        <a href="https://github.com/{this.props.repo}">{this.props.repo}</a>
+        <a href={"https://github.com/" + this.props.repo}>{this.props.repo}</a>
         </div>
         while listening to
-        <div className="track"> {this.props.track} </div>
+        <div className="track">
+          <a href={"http://www.last.fm/music/" + this.props.artist +
+            "/_/" + this.props.track}>{this.props.track}</a>
+        </div>
         by
-        <div className="artist"> {this.props.artist} </div>
+        <div className="artist">
+        <a href={"http://www.last.fm/music/" + this.props.artist}>
+        {this.props.artist}</a>
+        </div>
+        {moment(this.props.gittime).fromNow()}
       </div>
       </div>
       <div className="lfimg"> <img src={this.props.lfimg} /> </div>
@@ -158,7 +180,7 @@ var Commit = React.createClass({
   }
 });
 React.renderComponent(
-    <CommitBox url="https://gist.githubusercontent.com/infofarmer/ffb6aca820e84ee32114/raw/cb.json" pollInterval={3000} />,
+    <CommitBox url="https://gist.githubusercontent.com/infofarmer/ffb6aca820e84ee32114/raw/cb.json" pollInterval={10000} />,
     document.getElementById('content')
     );
     </script>
