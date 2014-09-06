@@ -126,9 +126,12 @@ var CommitList = React.createClass({
   }
   });
 var Commit = React.createClass({
+  handleClick: function(event) {
+    R.player.play({source: this.props.rdio});
+  },
   render: function() {
     return (
-      <div className="commit">
+      <div className="commit" onClick={this.handleClick} >
       <div className="userpic"> <img src={this.props.userpic} /> </div>
       <div className="center">
       <div className="msg"> {this.props.msg.slice(0,140)} </div>
