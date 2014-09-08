@@ -21,12 +21,15 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 #content {
 display: flex;
 font-family: Lato,
-sans-serif; }
+sans-serif;
+width: 100vw;
+}
 .commitBox .commitList {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
   justify-content: space-around;
+  width: 100%;
 }
 .commit {
   flex-wrap: wrap;
@@ -34,6 +37,7 @@ sans-serif; }
   flex-direction: row;
   justify-content: space-between;
   margin-bottom: 25px;
+  width: 100%;
 }
 
 .commit:hover {
@@ -180,7 +184,7 @@ var Commit = React.createClass({
   }
 });
 React.renderComponent(
-    <CommitBox url="https://gist.githubusercontent.com/infofarmer/ffb6aca820e84ee32114/raw/cb.json" pollInterval={10000} />,
+    <CommitBox url="https://raw.githubusercontent.com/infofarmer/commitbeat/master/cb.json" pollInterval={10000} />,
     document.getElementById('content')
     );
     </script>
