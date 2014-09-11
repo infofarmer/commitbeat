@@ -59,6 +59,19 @@ margin-bottom: 0.5em;
   padding: 1em;
 }
 
+.power {
+font-size: 8vh;
+display: flex;
+flex-direction: row;
+align-items: center;
+}
+
+.power img {
+  padding: 0 15px 0 15px;
+  height: 30px;
+  width: auto;
+}
+
 .msg {
 font-size: 8vh;
 height: 3em;
@@ -117,6 +130,16 @@ margin: 1em;
           <img src="octophone.png" />
           <h1>Commit ▶ Beat</h1>
           <h2>Real-Time Global Hacker Soundtrack</h2>
+          <div className="power">
+          <a href="https://github.com/">
+          <img src="gh.png" /></a>
+          +
+          <a href="http://www.last.fm/">
+          <img src="lf.png" /></a>
+          +
+          <a href="http://www.rdio.com/">
+          <img src="rdio.png" /></a>
+          </div>
           </div>
           <CommitList data={this.state.data} />
           </div>
